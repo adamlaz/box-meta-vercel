@@ -8,6 +8,7 @@ export default async function webhook(request, response) {
   if (isValid) {
     console.log('Webhook is valid'); // Log validation success
 
+    // Configure SDK with environment variables
     const config = {
       boxAppSettings: {
         clientID: process.env.clientID,
@@ -26,30 +27,26 @@ export default async function webhook(request, response) {
 
     try {
       console.log('Request Body:', request.body); // Log the entire request body
+      const fileId = request.body.source.id;
+      console.log('File ID:', fileId); // Log the file ID
 
-      try {
-        const fileId = request.body.source.id;
-        console.log('File ID:', fileId); // Log the file ID
+      // Apply metadata template to the file
+      const metadataTemplate = 'authorizingDocument';
+      const metadataBody = {
+        test1: 'asdf',
+        test2: '1234'
+      };
 
-        // Apply metadata template to the file
-        const metadataTemplate = 'authorizingDocument';
-        const metadataBody = {
-          test1: 'asdf',
-          test2: '1234'
-        };
+      const metadataResponse = await client.files.addMetadata(fileId, client.metadata.scopes.ENTERPRISE, metadataTemplate, metadataBody);
+      console.log('Metadata Response:', metadataResponse); // Log the response
 
-        const metadataResponse = await client.files.addMetadata(fileId, client.metadata.scopes.ENTERPRISE, metadataTemplate, metadataBody);
-        console.log('Metadata Response:', metadataResponse); // Log the response
-
-        response.status(200).json({ info: 'success' });
-
-      } catch (error) {
-        console.error('Error applying metadata:', error);
-        response.status(200).json({ info: 'Error', error: error.toString() });
-      }
-
-    } else {
-      console.error('Invalid webhook message');
-      response.status(200).json({ info: 'Invalid webhook message' });
+      response.status(200).json({ info: 'success' });
+    } catch (error) {
+      console.error('Error applying metadata:', error);
+      response.status(200).json({ info: 'Error', error: error.toString() });
     }
+  } else {
+    console.error('Invalid webhook message');
+    response.status(200).json({ info: 'Invalid webhook message' });
   }
+}
