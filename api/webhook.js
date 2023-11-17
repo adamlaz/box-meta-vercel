@@ -1,9 +1,13 @@
 const Box = require('box-node-sdk');
 
 export default async function webhook(request, response) {
-  console.log('Webhook triggered'); // Test log
+  console.log('Webhook triggered'); // Log that the webhook was triggered
 
-  let isValid = Box.validateWebhookMessage(request.body, request.headers, process.env.primaryKey, process.env.secondaryKey);
+  // Log request headers and raw body for debugging
+  console.log('Headers:', request.headers);
+  console.log('Raw Body:', request.rawBody); // Adjust based on how you can access the raw body
+
+  let isValid = Box.validateWebhookMessage(request.rawBody, request.headers, process.env.primaryKey, process.env.secondaryKey);
 
   if (isValid) {
     console.log('Webhook is valid'); // Log validation success
