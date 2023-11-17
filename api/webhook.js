@@ -1,16 +1,17 @@
 const Box = require('box-node-sdk');
 
 export default async function webhook(request, response) {
-  console.log('Webhook triggered'); // Log that the webhook was triggered
+  console.log('🚧Webhook triggered'); // Log that the webhook was triggered
 
   // Log request headers and raw body for debugging
-  console.log('Headers:', request.headers);
-  console.log('Raw Body:', request.rawBody); // Adjust based on how you can access the raw body
 
-  let isValid = Box.validateWebhookMessage(request.rawBody, request.headers, process.env.primaryKey, process.env.secondaryKey);
+  console.log('🚧Headers:', request.headers);
+  console.log('🚧Body:', request.body); // Adjust based on how you can access the raw body
+
+  let isValid = Box.validateWebhookMessage(request.body, request.headers, process.env.primaryKey, process.env.secondaryKey);
 
   if (isValid) {
-    console.log('Webhook is valid'); // Log validation success
+    console.log('🚧Webhook is valid'); // Log validation success
 
     // Configure SDK with environment variables
     const config = {
@@ -30,9 +31,9 @@ export default async function webhook(request, response) {
     const client = sdk.getAppAuthClient('enterprise', process.env.enterpriseID);
 
     try {
-      console.log('Request Body:', request.body); // Log the entire request body
+      console.log('🚧Request Body:', request.body); // Log the entire request body
       const fileId = request.body.source.id;
-      console.log('File ID:', fileId); // Log the file ID
+      console.log('🚧File ID:', fileId); // Log the file ID
 
       // Apply metadata template to the file
       const metadataTemplate = 'authorizingDocument';
@@ -42,7 +43,7 @@ export default async function webhook(request, response) {
       };
 
       const metadataResponse = await client.files.addMetadata(fileId, client.metadata.scopes.ENTERPRISE, metadataTemplate, metadataBody);
-      console.log('Metadata Response:', metadataResponse); // Log the response
+      console.log('🚧Metadata Response:', metadataResponse); // Log the response
 
       response.status(200).json({ info: 'success' });
     } catch (error) {
