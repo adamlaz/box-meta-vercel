@@ -1,19 +1,26 @@
 const Box = require('box-node-sdk');
 
 export default async function webhook(request, response) {
-  // Validate that Box is the service calling the webhook.
-  let isValid = Box.validateWebhookMessage(request.body, request.headers, process.env.primaryKey, process.env.secondaryKey);
+    let isValid = Box.validateWebhookMessage(request.body, request.headers, process.env.primaryKey, process.env.secondaryKey);
 
-  if (isValid) {
-    const sdkConfig = {
-      boxAppSettings: {
-        clientID: process.env.clientID,
-        clientSecret: process.env.clientSecret
-      },
-      enterpriseID: process.env.enterpriseID
-    };
-    const sdk = Box.getPreconfiguredInstance(sdkConfig);
-    const client = sdk.getAppAuthClient('enterprise', process.env.enterpriseID);
+    if (isValid) {
+        // Configure SDK with environment variables
+        const config = {
+            boxAppSettings: {
+                clientID: process.env.clientID,
+                clientSecret: process.env.clientSecret,
+                appAuth: {
+                    keyID: process.env.publicKeyID,
+                    privateKey: process.env.privateKey,
+                    passphrase: process.env.passphrase
+                }
+            },
+            enterpriseID: process.env.enterpriseID
+        };
+
+        const sdk = Box.getPreconfiguredInstance(config);
+        const client = sdk.getAppAuthClient('enterprise', process.env.enterpriseID);
+
 
     try {
       const fileId = request.body.source.id;
