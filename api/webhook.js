@@ -4,7 +4,6 @@ export default async function webhook(request, response) {
   console.log('🚧Webhook triggered'); // Log that the webhook was triggered
 
   // Log request headers and raw body for debugging
-
   console.log('🚧Headers:', request.headers);
   console.log('🚧Body:', request.body); // Adjust based on how you can access the raw body
 
@@ -13,14 +12,14 @@ export default async function webhook(request, response) {
   if (isValid) {
     console.log('🚧Webhook is valid'); // Log validation success
 
-    // Configure SDK with environment variables
+    // Configure SDK with environment variables for JWT authentication
     const config = {
       boxAppSettings: {
         clientID: process.env.clientID,
         clientSecret: process.env.clientSecret,
         appAuth: {
           keyID: process.env.publicKeyID,
-          privateKey: process.env.privateKey,
+          privateKey: process.env.privateKey.replace(/\\n/g, '\n'), // Format private key correctly
           passphrase: process.env.passphrase
         }
       },
@@ -31,7 +30,6 @@ export default async function webhook(request, response) {
     const client = sdk.getAppAuthClient('enterprise', process.env.enterpriseID);
 
     try {
-      console.log('🚧Request Body:', request.body); // Log the entire request body
       const fileId = request.body.source.id;
       console.log('🚧File ID:', fileId); // Log the file ID
 
