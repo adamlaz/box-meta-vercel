@@ -5,7 +5,7 @@ export default async function webhook(request, response) {
 
   // Log request headers and raw body for debugging
   console.log('🚧Headers:', request.headers);
-  console.log('🚧Body:', request.body); // Adjust based on how you can access the raw body
+  console.log('🚧Body:', request.body);
 
   let isValid = Box.validateWebhookMessage(request.body, request.headers, process.env.primaryKey, process.env.secondaryKey);
 
@@ -19,7 +19,7 @@ export default async function webhook(request, response) {
         clientSecret: process.env.clientSecret,
         appAuth: {
           keyID: process.env.publicKeyID,
-          privateKey: process.env.privateKey.replace(/\\n/g, '\n'), // Format private key correctly
+          privateKey: process.env.privateKey.replace(/\\n/g, '\n'), 
           passphrase: process.env.passphrase
         }
       },
